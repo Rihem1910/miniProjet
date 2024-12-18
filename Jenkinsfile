@@ -14,6 +14,8 @@ pipeline {
         stage('build') {
             steps {
                 script {
+                    bash 'docker context use desktop-linux'
+
                   docker.build("${DOCKER_IMAGE}:version1")
                 }
             }
@@ -22,6 +24,7 @@ pipeline {
         stage('push') {
             steps {
                 script {
+                    bash 'docker context use desktop-linux'
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         docker.image("${DOCKER_IMAGE}:version1").push()
                     }
@@ -31,6 +34,7 @@ pipeline {
     stage('deploy') {
             steps {
                 script {
+                    bash 'docker context use desktop-linux'
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
                         def docker_image = docker.image("${DOCKER_IMAGE}:version1")
                         docker_image.run('--name miniProjet -p 8090:8090')
